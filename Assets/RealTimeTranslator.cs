@@ -44,28 +44,27 @@ public class RealTimeTranslator : MonoBehaviour
     // Use this for initialization
     async void Start()
     {
-#if USE_NETWORK
         var cfg = AudioSettings.GetConfiguration();
         cfg.dspBufferSize = 0;
 
         ServicePointManager.ServerCertificateValidationCallback = cb;
         _ws = new ClientWebSocket();
         _ws.Options.SetRequestHeader("Ocp-Apim-Subscription-Key", key);
-        //await _ws.ConnectAsync(new Uri(url), CancellationToken.None);
-        await _ws.ConnectAsync(new Uri("http://localhost:54545"), CancellationToken.None);
+        await _ws.ConnectAsync(new Uri(url), CancellationToken.None);
+        //await _ws.ConnectAsync(new Uri("http://localhost:54545"), CancellationToken.None);
         Debug.Log("successfully connected");
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         //Task.Run(ReceiveAsync);
-        //ReceiveAsync();
+        ReceiveAsync();
 
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-#endif
+
         _wav = new WavFile();
 
         // as soon as we are connected send the WAVE header..
         ArraySegment<byte> data = new ArraySegment<byte>(GetWaveHeader(0));
-        //await _ws.SendAsync(data, WebSocketMessageType.Text, true, CancellationToken.None);
+        await _ws.SendAsync(data, WebSocketMessageType.Text, true, CancellationToken.None);
         Debug.Log("Sent WAVE header");
 
         // From here we can start streaming data from the mic...
@@ -156,10 +155,12 @@ public class RealTimeTranslator : MonoBehaviour
             }
             if (_wav != null)
                 _wav.WriteData(buffer.Array, buffer.Count);
+            if (_ws != null)
+                _ws.SendAsync(buffer, WebSocketMessageType.Binary, false, CancellationToken.None);
 
             dataStream = new MemoryStream();
 
-            if (_totalRead > SampleRate * 10)
+            if (_wav != null && _totalRead > SampleRate * 10)
             {
                 Debug.Log("Closing file");
                 using (var debugFs = new FileStream("out.wav", FileMode.OpenOrCreate))
