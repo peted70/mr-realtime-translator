@@ -64,7 +64,7 @@ public class RealTimeTranslator : MonoBehaviour
 
         // as soon as we are connected send the WAVE header..
         ArraySegment<byte> data = new ArraySegment<byte>(GetWaveHeader(0));
-        await _ws.SendAsync(data, WebSocketMessageType.Text, true, CancellationToken.None);
+        await _ws.SendAsync(data, WebSocketMessageType.Text, false, CancellationToken.None);
         Debug.Log("Sent WAVE header");
 
         // From here we can start streaming data from the mic...
@@ -115,8 +115,8 @@ public class RealTimeTranslator : MonoBehaviour
     {
         if (_clip == null)
             return;
-        if (_wav == null)
-            return;
+        //if (_wav == null)
+        //    return;
 
         int currentPos = Microphone.GetPosition(_mic);
         if (currentPos < _lastRead)
@@ -135,7 +135,7 @@ public class RealTimeTranslator : MonoBehaviour
         // enough..
         audioData = new float[currentPos - _lastRead];
 
-        Debug.Log("audiodata length = " + audioData.Length + " last read = " + _lastRead);
+        //Debug.Log("audiodata length = " + audioData.Length + " last read = " + _lastRead);
         if (_clip.GetData(audioData, _lastRead))
         {
             _totalRead += BufferConvertedData(audioData, dataStream);
