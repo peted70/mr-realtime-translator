@@ -15,6 +15,7 @@ public class RealTimeTranslator : MonoBehaviour
     AudioClip _clip;
     string _mic;
     ClientWebSocket _ws;
+    public TextMesh text;
 
     string key = Environment.GetEnvironmentVariable("SKYPE_KEY");
     string url = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=ru&features=texttospeech&voice=ru-RU-Irina&api-version=1.0";
@@ -64,7 +65,7 @@ public class RealTimeTranslator : MonoBehaviour
 
         // as soon as we are connected send the WAVE header..
         ArraySegment<byte> data = new ArraySegment<byte>(GetWaveHeader(0));
-        await _ws.SendAsync(data, WebSocketMessageType.Text, false, CancellationToken.None);
+        await _ws.SendAsync(data, WebSocketMessageType.Binary, false, CancellationToken.None);
         Debug.Log("Sent WAVE header");
 
         // From here we can start streaming data from the mic...
@@ -181,7 +182,7 @@ public class RealTimeTranslator : MonoBehaviour
         {
             Debug.Log("ReceiveAsync");
             var response = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
+            text.text = response.ToString();
             Debug.Log("detected msg -> " + Enum.GetName(typeof(WebSocketMessageType), response.MessageType));
 
             if (response.MessageType == WebSocketMessageType.Close)

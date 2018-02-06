@@ -577,7 +577,7 @@ PlayerSettings:
       AllJoyn: False
       BlockedChatMessages: False
       Bluetooth: False
-      Chat: False
+      Chat: True
       CodeGeneration: False
       EnterpriseAuthentication: False
       HumanInterfaceDevice: False
@@ -590,14 +590,14 @@ PlayerSettings:
       Objects3D: False
       PhoneCall: False
       PicturesLibrary: False
-      PrivateNetworkClientServer: False
+      PrivateNetworkClientServer: True
       Proximity: False
       RemovableStorage: False
       SharedUserCertificates: False
       SpatialPerception: False
       UserAccountInformation: False
       VideosLibrary: False
-      VoipCall: False
+      VoipCall: True
       WebCam: False
   metroFTAName: 
   metroFTAFileTypes: []
