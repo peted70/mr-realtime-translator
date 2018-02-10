@@ -44,6 +44,10 @@ public class RealTimeTranslator : MonoBehaviour
     // Use this for initialization
     async void Start()
     {
+        var cfg = AudioSettings.GetConfiguration();
+        cfg.dspBufferSize = 0;
+        ServicePointManager.ServerCertificateValidationCallback = cb;
+
         IAudioConsumer wavFile = new WavFile(SampleRate);
         await wavFile.InitialiseAsync();
 
@@ -52,10 +56,6 @@ public class RealTimeTranslator : MonoBehaviour
 
         _consumers.Add(wavFile);
         _consumers.Add(apiProxy);
-
-        var cfg = AudioSettings.GetConfiguration();
-        cfg.dspBufferSize = 0;
-        ServicePointManager.ServerCertificateValidationCallback = cb;
 
         // From here we can start streaming data from the mic...
         if (Microphone.devices.Length > 0)
