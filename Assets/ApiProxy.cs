@@ -63,8 +63,7 @@ public class ApiProxy : IAudioConsumer
 
     private void OnReceived(string val)
     {
-        if (Received != null)
-            Received(val);
+        Received?.Invoke(val);
     }
 
     private async Task ReceiveAsync()

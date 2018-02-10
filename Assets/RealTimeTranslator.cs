@@ -52,6 +52,7 @@ public class RealTimeTranslator : MonoBehaviour
         await wavFile.InitialiseAsync();
 
         IAudioConsumer apiProxy = new ApiProxy();
+        apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
 
         _consumers.Add(wavFile);
@@ -77,6 +78,11 @@ public class RealTimeTranslator : MonoBehaviour
         {
             Debug.Log("No Microphone detected");
         }
+    }
+
+    private void ApiProxy_Received(string val)
+    {
+        text.text = val;
     }
 
     int BufferConvertedData(float[] audioData, Stream stream)
