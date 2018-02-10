@@ -48,14 +48,13 @@ public class RealTimeTranslator : MonoBehaviour
         cfg.dspBufferSize = 0;
         ServicePointManager.ServerCertificateValidationCallback = cb;
 
-        IAudioConsumer wavFile = new WavFile(SampleRate);
-        await wavFile.InitialiseAsync();
+        //IAudioConsumer wavFile = new WavFile(SampleRate);
+        //await wavFile.InitialiseAsync();
+        //_consumers.Add(wavFile);
 
         IAudioConsumer apiProxy = new ApiProxy();
         apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
-
-        _consumers.Add(wavFile);
         _consumers.Add(apiProxy);
 
         // From here we can start streaming data from the mic...
@@ -88,13 +87,10 @@ public class RealTimeTranslator : MonoBehaviour
     int BufferConvertedData(float[] audioData, Stream stream)
     {
         // Can't just do a block copy here as we need to convert from float[-1.0f, 1.0f] to 16bit PCM
-        int x = sizeof(UInt16);
-        UInt16 maxValue = UInt16.MaxValue;
-
         int i = 0;
         while (i < audioData.Length)
         {
-            stream.Write(BitConverter.GetBytes(Convert.ToInt16(audioData[i] * maxValue)), 0, x);
+            stream.Write(BitConverter.GetBytes(Convert.ToInt16(audioData[i] * Int16.MaxValue)), 0, sizeof(Int16));
             ++i;
         }
 
@@ -156,11 +152,11 @@ public class RealTimeTranslator : MonoBehaviour
 
                 if (consumer.WriteSynchronous())
                 {
-                    consumer.WriteData(buffer, buffer.Count);
+                    consumer.WriteData(buffer);
                 }
                 else
                 {
-                    consumer.WriteDataAsync(buffer, buffer.Count);
+                    consumer.WriteDataAsync(buffer);
                 }
             }
 

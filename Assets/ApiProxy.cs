@@ -112,12 +112,12 @@ public class ApiProxy : IAudioConsumer
         return Task.FromResult(0);
     }
 
-    public void WriteData(ArraySegment<byte> data, int length)
+    public void WriteData(ArraySegment<byte> data)
     {
         throw new NotImplementedException();
     }
 
-    public async Task WriteDataAsync(ArraySegment<byte> data, int length)
+    public async Task WriteDataAsync(ArraySegment<byte> data)
     {
         if (_ws != null)
         {

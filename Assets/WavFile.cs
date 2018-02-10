@@ -9,34 +9,37 @@ public class WavFile : IAudioConsumer
     private MemoryStream _ms;
     private BinaryWriter _bw;
     private bool _disposed;
+    private int _samplesUntilSave;
 
     public event ReceiveHandler Received;
 
     public WavFile(int sampleRate)
     {
         _sampleRate = sampleRate;
-    }
-    public void WriteData(ArraySegment<byte> data, int length)
-    {
-        if (_disposed == false)
-            _bw.Write(data.Array, 0, length);
+        _samplesUntilSave = _sampleRate * 10;
     }
 
-    public Task WriteDataAsync(ArraySegment<byte> data, int length)
+    public void WriteData(ArraySegment<byte> data)
     {
         if (_disposed == false)
-            return Task.Run(() => _bw.Write(data.Array, 0, length));
+            WriteData(data.Array);
+    }
+
+    public Task WriteDataAsync(ArraySegment<byte> data)
+    {
+        if (_disposed == false)
+            return Task.Run(() => WriteData(data.Array));
         return null;
     }
 
     int _totalWritten = 0;
     private readonly int _sampleRate;
 
-    private void WriteData(byte[] data, int length)
+    private void WriteData(byte[] data)
     {
-        _totalWritten += length;
-        _bw.Write(data, 0, length);
-        if (_totalWritten > _sampleRate * 10)
+        _bw.Write(data);
+        _totalWritten += data.Length;
+        if (_totalWritten > _samplesUntilSave)
         {
             SaveAsync();
         }
@@ -47,8 +50,13 @@ public class WavFile : IAudioConsumer
         return !_disposed;
     }
 
+    bool _saving = false;
     public async Task SaveAsync()
     {
+        if (_saving == true)
+            return;
+
+        _saving = true;
         Debug.Log("Closing file");
         using (var debugFs = new FileStream("out.wav", FileMode.OpenOrCreate))
         {
