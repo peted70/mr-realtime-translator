@@ -48,6 +48,11 @@ public class RealTimeTranslator : MonoBehaviour
     {
         var cfg = AudioSettings.GetConfiguration();
         cfg.dspBufferSize = 0;
+
+        var audioSrc = GetComponent<AudioSource>();
+        var clip = new AudioClip();// AudioClip.Create("TranslationOutClip", 0, 1, 16000);
+        audioSrc.clip = clip;
+
 #if UNITY_EDITOR
         ServicePointManager.ServerCertificateValidationCallback = cb;
 #endif
@@ -61,7 +66,8 @@ public class RealTimeTranslator : MonoBehaviour
         await apiProxy.InitialiseAsync();
         _consumers.Add(apiProxy);
 #elif WINDOWS_UWP
-        IAudioConsumer apiProxy = new ApiProxyUWP();
+        var apiProxy = new ApiProxyUWP();
+        apiProxy.AudioDataReceived += ApiProxy_AudioDataReceived;
         apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
         _consumers.Add(apiProxy);
@@ -89,9 +95,24 @@ public class RealTimeTranslator : MonoBehaviour
         }
     }
 
+    private void ApiProxy_AudioDataReceived(AudioDataReceivedEventArgs data)
+    {
+        UnityEngine.WSA.Application.InvokeOnAppThread(() =>
+        {
+            var audioSrc = GetComponent<AudioSource>();
+            var clip = AudioClip.Create("TranslationResponse", data.Data.Length, 1, 16000, false);
+            clip.SetData(data.Data, 0);
+            audioSrc.clip = clip;
+            audioSrc.enabled = true;
+            audioSrc.Play();
+            Debug.Log("Playing audio");
+        }, 
+        false);
+    }
+
     private void ApiProxy_Received(string val)
     {
-        text.text = val;
+        UnityEngine.WSA.Application.InvokeOnAppThread(() => { text.text = val; }, false);
     }
 
     int BufferConvertedData(float[] audioData, Stream stream)

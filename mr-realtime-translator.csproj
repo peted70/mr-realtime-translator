@@ -212,6 +212,7 @@
   <ItemGroup>
     <Compile Include="Assets\ApiProxy.cs" />
     <Compile Include="Assets\ApiProxyUWP.cs" />
+    <Compile Include="Assets\AudioDataReceivedEventArgs.cs" />
     <Compile Include="Assets\IAudioConsumer.cs" />
     <Compile Include="Assets\RealTimeTranslator.cs" />
     <Compile Include="Assets\Result.cs" />

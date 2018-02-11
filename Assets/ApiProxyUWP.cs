@@ -8,6 +8,8 @@ using UnityEngine;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 
+public delegate void AudioDataReceivedHandler(AudioDataReceivedEventArgs data);
+
 public class ApiProxyUWP : IAudioConsumer
 {
     private HttpClient _http;
@@ -15,8 +17,12 @@ public class ApiProxyUWP : IAudioConsumer
     private DataWriter _dataWriter;
 
     public event ReceiveHandler Received;
+    public event AudioDataReceivedHandler AudioDataReceived;
 
-    const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0";
+    private AudioDataReceivedEventArgs _args = new AudioDataReceivedEventArgs();
+
+    //const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0";
+    const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=es&features=texttospeech&voice=es-ES-Laura&api-version=1.0";
 
     public async Task InitialiseAsync()
     {
@@ -40,20 +46,19 @@ public class ApiProxyUWP : IAudioConsumer
         await _dataWriter.FlushAsync();
     }
 
-    private void _ws_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
+    private async void _ws_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
     {
         if (args.MessageType == SocketMessageType.Utf8)
         {
-            // parse the text result that contains the recognition and translation
-            // {"type":"final","id":"0","recognition":"Hello, can you hear me now?","translation":"Hallo, kannst du mich jetzt hören?"}
             string jsonOutput;
             using (var dataReader = args.GetDataReader())
             {
-                dataReader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+                dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
                 jsonOutput = dataReader.ReadString(dataReader.UnconsumedBufferLength);
             }
 
             var result = JsonConvert.DeserializeObject<Result>(jsonOutput);
+            Received?.Invoke(result.translation);
         }
         else if (args.MessageType == SocketMessageType.Binary)
         {
@@ -61,9 +66,35 @@ public class ApiProxyUWP : IAudioConsumer
             using (var dataReader = args.GetDataReader())
             {
                 dataReader.ByteOrder = ByteOrder.LittleEndian;
+
+                // Read the data from the audio returned - convert to [-1.0f, 1.0f]
+                // then we can use an AudioClip in Unity and set the data into it and
+                // play it back...
+                var numBytes = dataReader.UnconsumedBufferLength;
+
+                // Skip over the RIFF header for PCM 16bit 16kHz mono output
+                var headerSize = 44;
+                var bytes = new byte[headerSize];
+                dataReader.ReadBytes(bytes);
+
+                // skip the header
+                var numSamples = (int)(numBytes - headerSize);
+
+                float[] data = new float[numSamples];
+                //var count = await dataReader.LoadAsync(numSamples);
+
+                int numInt16s = numSamples / sizeof(Int16);
+                for (int i=0;i<numInt16s; i++)
+                {
+                    data[i] = dataReader.ReadInt16() / Int16.MaxValue;
+                }
+
+                // Notify observers with this audio data.. (probably should notify the header
+                // to future-proof but skip that for now - API data is signed 16bit PCM mono audio)
+                _args.Data = data;
+                AudioDataReceived?.Invoke(_args);
             }
         }
-
     }
 
     private async Task<string> GetTokenAsync()
