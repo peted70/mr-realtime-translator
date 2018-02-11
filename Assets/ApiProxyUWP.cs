@@ -8,6 +8,7 @@ using UnityEngine;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 
+public delegate void ReceiveHandler(string val);
 public delegate void AudioDataReceivedHandler(AudioDataReceivedEventArgs data);
 
 public class ApiProxyUWP : IAudioConsumer

@@ -1,0 +1,3 @@
+[submodule "Assets/HoloToolkit"]
+	path = Assets/HoloToolkit
+	url = https://github.com/Microsoft/MixedRealityToolkit-Unity.git

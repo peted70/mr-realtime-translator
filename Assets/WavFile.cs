@@ -11,8 +11,6 @@ public class WavFile : IAudioConsumer
     private bool _disposed;
     private int _samplesUntilSave;
 
-    public event ReceiveHandler Received;
-
     public WavFile(int sampleRate)
     {
         _sampleRate = sampleRate;
