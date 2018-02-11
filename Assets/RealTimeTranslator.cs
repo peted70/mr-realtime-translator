@@ -49,10 +49,6 @@ public class RealTimeTranslator : MonoBehaviour
         var cfg = AudioSettings.GetConfiguration();
         cfg.dspBufferSize = 0;
 
-        var audioSrc = GetComponent<AudioSource>();
-        var clip = new AudioClip();// AudioClip.Create("TranslationOutClip", 0, 1, 16000);
-        audioSrc.clip = clip;
-
 #if UNITY_EDITOR
         ServicePointManager.ServerCertificateValidationCallback = cb;
 #endif
@@ -102,9 +98,16 @@ public class RealTimeTranslator : MonoBehaviour
             var audioSrc = GetComponent<AudioSource>();
             var clip = AudioClip.Create("TranslationResponse", data.Data.Length, 1, 16000, false);
             clip.SetData(data.Data, 0);
+            audioSrc.playOnAwake = true;
             audioSrc.clip = clip;
+            audioSrc.volume = 1;
             audioSrc.enabled = true;
-            audioSrc.Play();
+            audioSrc.minDistance = 0;
+            audioSrc.maxDistance = 1000;
+
+            audioSrc.rolloffMode = AudioRolloffMode.Linear;
+            audioSrc.Stop();
+            audioSrc.PlayOneShot(clip, 100.0f);
             Debug.Log("Playing audio");
         }, 
         false);

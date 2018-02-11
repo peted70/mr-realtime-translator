@@ -86,7 +86,7 @@ public class ApiProxyUWP : IAudioConsumer
                 int numInt16s = numSamples / sizeof(Int16);
                 for (int i=0;i<numInt16s; i++)
                 {
-                    data[i] = dataReader.ReadInt16() / Int16.MaxValue;
+                    data[i] = dataReader.ReadInt16() / (float)Int16.MaxValue;
                 }
 
                 // Notify observers with this audio data.. (probably should notify the header
