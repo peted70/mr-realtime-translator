@@ -29,7 +29,7 @@ wss.on('connection', function connection(ws) {
         // collect the data into a wav file complete with header..
         if (!done)
             stream.write(message);    
-        if (times++ > 10) {
+        if (times++ > 30) {
             stream.close();
             done = true;
         }

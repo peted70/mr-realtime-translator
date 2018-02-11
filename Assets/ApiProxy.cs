@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNTIY_EDITOR
+using System;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
@@ -8,7 +9,10 @@ using UnityEngine;
 
 public class ApiProxy : IAudioConsumer
 {
-    const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=ru&features=texttospeech&voice=ru-RU-Irina&api-version=1.0";
+    // GET /speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0
+    // GET /speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0
+    const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0";
+    //const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=ru&features=texttospeech&voice=ru-RU-Irina&api-version=1.0";
     private HttpClient _http;
     private ClientWebSocket _ws;
 
@@ -40,13 +44,13 @@ public class ApiProxy : IAudioConsumer
         try
         {
             await _ws.ConnectAsync(new Uri(speechurl), CancellationToken.None);
+            //await _ws.ConnectAsync(new Uri("http://localhost:54545"), CancellationToken.None);
         }
         catch (WebSocketException ex)
         {
             Debug.Log(ex.Message + " error code: " + ex.WebSocketErrorCode);
             return;
         }
-        //await _ws.ConnectAsync(new Uri("http://localhost:54545"), CancellationToken.None);
         Debug.Log("successfully connected");
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -57,7 +61,7 @@ public class ApiProxy : IAudioConsumer
 
         // as soon as we are connected send the WAVE header..
         ArraySegment<byte> data = new ArraySegment<byte>(WavFile.GetWaveHeader(0));
-        await _ws.SendAsync(data, WebSocketMessageType.Text, true, CancellationToken.None);
+        await _ws.SendAsync(data, WebSocketMessageType.Binary, true, CancellationToken.None);
         Debug.Log("Sent WAVE header");
     }
 
@@ -131,3 +135,4 @@ public class ApiProxy : IAudioConsumer
         return false;
     }
 }
+#endif

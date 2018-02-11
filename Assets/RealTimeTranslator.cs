@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Security;
+#if UNITY_EDITOR
 using System.Security.Cryptography.X509Certificates;
+#endif
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
@@ -46,16 +48,24 @@ public class RealTimeTranslator : MonoBehaviour
     {
         var cfg = AudioSettings.GetConfiguration();
         cfg.dspBufferSize = 0;
+#if UNITY_EDITOR
         ServicePointManager.ServerCertificateValidationCallback = cb;
+#endif
 
         //IAudioConsumer wavFile = new WavFile(SampleRate);
         //await wavFile.InitialiseAsync();
         //_consumers.Add(wavFile);
-
+#if UNTIY_EDITOR
         IAudioConsumer apiProxy = new ApiProxy();
         apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
         _consumers.Add(apiProxy);
+#elif WINDOWS_UWP
+        IAudioConsumer apiProxy = new ApiProxyUWP();
+        apiProxy.Received += ApiProxy_Received;
+        await apiProxy.InitialiseAsync();
+        _consumers.Add(apiProxy);
+#endif
 
         // From here we can start streaming data from the mic...
         if (Microphone.devices.Length > 0)
@@ -164,9 +174,11 @@ public class RealTimeTranslator : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     private bool cb(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
     {
         return true;
     }
+#endif
 }
 

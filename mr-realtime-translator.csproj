@@ -202,12 +202,16 @@
     <Reference Include="UnityEngine.Purchasing">
       <HintPath>C:/Users/Pete D/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.purchasing@1.0.1/UnityEngine.Purchasing.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets/Plugins/JsonNet/Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http">
       <HintPath>C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\4.6-api\System.Net.Http.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ApiProxy.cs" />
+    <Compile Include="Assets\ApiProxyUWP.cs" />
     <Compile Include="Assets\IAudioConsumer.cs" />
     <Compile Include="Assets\RealTimeTranslator.cs" />
     <Compile Include="Assets\Result.cs" />
