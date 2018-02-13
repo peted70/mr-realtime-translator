@@ -52,13 +52,15 @@ public class ApiProxyUWP : IAudioConsumer
 
     public async Task InitialiseAsync()
     {
-        var token = await GetTokenAsync();
-        _ws = new MessageWebSocket();
-        _ws.SetRequestHeader("Authorization", "Bearer " + token);
-        _ws.MessageReceived += _ws_MessageReceived;
+        // Retrieve the Auth token and also retrive the language support
+        // data in parallel..
+        var getTokenTask = GetTokenAsync();
+        var getLanguageSupportTask = GetLanguageSupportAsync();
 
-        // Note : do some of this in parallel..
-        _languages = await GetLanguageSupportAsync();
+        await Task.WhenAll(getTokenTask, getLanguageSupportTask);
+
+        var token = getTokenTask.Result;
+        _languages = getLanguageSupportTask.Result;
 
         await _ws.ConnectAsync(new Uri(speechurl));
         Debug.Log("successfully connected");
