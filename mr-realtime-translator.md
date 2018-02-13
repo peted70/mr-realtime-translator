@@ -1,0 +1,3 @@
+## mixed reality real-time translator ##
+
+Did you know that there is an API that you can call which will accept as input an audio stream, say from a microphone, that will translate any spoken sentences into another language? So whilst we speak our words can be understood by others who wouldn't usually understand us and all happening in real-time as we utter those sentences. The API in question is in the suite of Microsoft cogntive services hidden away amongst face detection and recognition and natural language understanding services. All of which  

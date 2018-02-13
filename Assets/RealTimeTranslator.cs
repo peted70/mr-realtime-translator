@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Security;
 #if UNITY_EDITOR
 using System.Security.Cryptography.X509Certificates;
@@ -52,17 +53,23 @@ public class RealTimeTranslator : MonoBehaviour
 #if UNITY_EDITOR
         ServicePointManager.ServerCertificateValidationCallback = cb;
 #endif
-
-        //IAudioConsumer wavFile = new WavFile(SampleRate);
-        //await wavFile.InitialiseAsync();
-        //_consumers.Add(wavFile);
+        //using (var httpClient = new HttpClient())
+        //{
+        //    var response = await httpClient.GetAsync("https://dev.microsofttranslator.com/languages?api-version=1.0&scope=text,tts,speech");
+        //    // add header
+        //    response.EnsureSuccessStatusCode();
+        //    var jsonString = await response.Content.ReadAsStringAsync();
+        //}
+        //    //IAudioConsumer wavFile = new WavFile(SampleRate);
+            //await wavFile.InitialiseAsync();
+            //_consumers.Add(wavFile);
 #if UNTIY_EDITOR
         IAudioConsumer apiProxy = new ApiProxy();
         apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
         _consumers.Add(apiProxy);
 #elif WINDOWS_UWP
-        var apiProxy = new ApiProxyUWP();
+            var apiProxy = new ApiProxyUWP();
         apiProxy.AudioDataReceived += ApiProxy_AudioDataReceived;
         apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
@@ -205,4 +212,3 @@ public class RealTimeTranslator : MonoBehaviour
     }
 #endif
 }
-

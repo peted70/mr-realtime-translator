@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -10,6 +11,28 @@ using Windows.Storage.Streams;
 
 public delegate void ReceiveHandler(string val);
 public delegate void AudioDataReceivedHandler(AudioDataReceivedEventArgs data);
+
+public class Languages
+{
+    public List<SpeechItem> languages { get; set; } = new List<SpeechItem>();
+    public Dictionary<string, VoiceItem> Voices { get; set; } = new Dictionary<string, VoiceItem>();
+}
+
+public class SpeechItem
+{
+    public string name { get; set; }
+    public string language { get; set; }
+}
+
+public class VoiceItem
+{
+    public string gender { get; set; }
+    public string locale { get; set; }
+    public string languageName { get; set; }
+    public string displayName { get; set; }
+    public string regionName { get; set; }
+    public string language { get; set; }
+}
 
 public class ApiProxyUWP : IAudioConsumer
 {
@@ -31,6 +54,22 @@ public class ApiProxyUWP : IAudioConsumer
         _ws = new MessageWebSocket();
         _ws.SetRequestHeader("Authorization", "Bearer " + token);
         _ws.MessageReceived += _ws_MessageReceived;
+
+        // Note : do some of this in parallel..
+        using (var httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync("https://dev.microsofttranslator.com/languages?api-version=1.0&scope=text,tts,speech");
+            // add header
+            response.EnsureSuccessStatusCode();
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            dynamic obj = JsonConvert.DeserializeObject(jsonString);
+            foreach (var speechItem in obj.speech)
+            {
+
+            }
+        }
+
         await _ws.ConnectAsync(new Uri(speechurl));
         Debug.Log("successfully connected");
 
@@ -85,7 +124,7 @@ public class ApiProxyUWP : IAudioConsumer
                 //var count = await dataReader.LoadAsync(numSamples);
 
                 int numInt16s = numSamples / sizeof(Int16);
-                for (int i=0;i<numInt16s; i++)
+                for (int i = 0; i < numInt16s; i++)
                 {
                     data[i] = dataReader.ReadInt16() / (float)Int16.MaxValue;
                 }
