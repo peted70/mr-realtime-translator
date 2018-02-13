@@ -21,6 +21,7 @@ public class Languages
 public class SpeechItem
 {
     public string name { get; set; }
+    public string displayname { get; set; }
     public string language { get; set; }
 }
 
@@ -39,6 +40,7 @@ public class ApiProxyUWP : IAudioConsumer
     private HttpClient _http;
     private MessageWebSocket _ws;
     private DataWriter _dataWriter;
+    private Languages _languages;
 
     public event ReceiveHandler Received;
     public event AudioDataReceivedHandler AudioDataReceived;
@@ -56,19 +58,7 @@ public class ApiProxyUWP : IAudioConsumer
         _ws.MessageReceived += _ws_MessageReceived;
 
         // Note : do some of this in parallel..
-        using (var httpClient = new HttpClient())
-        {
-            var response = await httpClient.GetAsync("https://dev.microsofttranslator.com/languages?api-version=1.0&scope=text,tts,speech");
-            // add header
-            response.EnsureSuccessStatusCode();
-            var jsonString = await response.Content.ReadAsStringAsync();
-
-            dynamic obj = JsonConvert.DeserializeObject(jsonString);
-            foreach (var speechItem in obj.speech)
-            {
-
-            }
-        }
+        _languages = await GetLanguageSupportAsync();
 
         await _ws.ConnectAsync(new Uri(speechurl));
         Debug.Log("successfully connected");
@@ -84,6 +74,42 @@ public class ApiProxyUWP : IAudioConsumer
         _dataWriter.WriteBytes(bytes);
         await _dataWriter.StoreAsync();
         await _dataWriter.FlushAsync();
+    }
+
+    async Task<Languages> GetLanguageSupportAsync()
+    {
+        Languages ret = null;
+        using (var httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync("https://dev.microsofttranslator.com/languages?api-version=1.0&scope=text,tts,speech");
+            response.EnsureSuccessStatusCode();
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            dynamic obj = JsonConvert.DeserializeObject(jsonString);
+            ret = new Languages();
+            foreach (var speechItem in obj.speech)
+            {
+                ret.languages.Add(new SpeechItem
+                {
+                    language = speechItem.Value.language,
+                    displayname = speechItem.Value.name,
+                    name = speechItem.Name,
+                });
+            }
+            foreach (var voiceItem in obj.tts)
+            {
+                ret.Voices.Add(voiceItem.Name, new VoiceItem
+                {
+                    displayName = voiceItem.Value.displayName,
+                    gender = voiceItem.Value.gender,
+                    language = voiceItem.Value.language,
+                    languageName = voiceItem.Value.languageName,
+                    locale = voiceItem.Value.locale,
+                    regionName = voiceItem.Value.regionName,
+                });
+            }
+        }
+        return ret;
     }
 
     private async void _ws_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
