@@ -40,7 +40,8 @@ public class ApiProxyUWP : IAudioConsumer
     private HttpClient _http;
     private MessageWebSocket _ws;
     private DataWriter _dataWriter;
-    private Languages _languages;
+
+    public Languages _languages;
 
     public event ReceiveHandler Received;
     public event AudioDataReceivedHandler AudioDataReceived;
