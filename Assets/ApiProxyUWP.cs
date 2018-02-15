@@ -8,19 +8,19 @@ using UnityEngine;
 #if !UNITY_EDITOR && WINDOWS_UWP
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
+#endif
 
-public delegate void ReceiveHandler(string val);
-public delegate void AudioDataReceivedHandler(AudioDataReceivedEventArgs data);
-
+[Serializable]
 public class Languages
 {
-    public List<SpeechItem> languages { get; set; } = new List<SpeechItem>();
+    public List<SpeechItem> languages = new List<SpeechItem>();
     public Dictionary<string, VoiceItem> Voices { get; set; } = new Dictionary<string, VoiceItem>();
 }
 
+[Serializable]
 public class SpeechItem
 {
-    public string name { get; set; }
+    public string name;
     public string displayname { get; set; }
     public string language { get; set; }
 }
@@ -35,12 +35,17 @@ public class VoiceItem
     public string language { get; set; }
 }
 
+
+public delegate void ReceiveHandler(string val);
+public delegate void AudioDataReceivedHandler(AudioDataReceivedEventArgs data);
+
 public class ApiProxyUWP : IAudioConsumer
 {
     private HttpClient _http;
+#if !UNITY_EDITOR && WINDOWS_UWP
     private MessageWebSocket _ws;
     private DataWriter _dataWriter;
-
+#endif
     public Languages _languages;
 
     public event ReceiveHandler Received;
@@ -63,6 +68,7 @@ public class ApiProxyUWP : IAudioConsumer
         var token = getTokenTask.Result;
         _languages = getLanguageSupportTask.Result;
 
+#if !UNITY_EDITOR && WINDOWS_UWP
         await _ws.ConnectAsync(new Uri(speechurl));
         Debug.Log("successfully connected");
 
@@ -70,16 +76,19 @@ public class ApiProxyUWP : IAudioConsumer
         _dataWriter = new DataWriter(_ws.OutputStream);
         await WriteBytes(WavFile.GetWaveHeader(0));
         Debug.Log("Sent WAVE header");
+#endif
     }
 
     private async Task WriteBytes(byte[] bytes)
     {
+#if !UNITY_EDITOR && WINDOWS_UWP
         _dataWriter.WriteBytes(bytes);
         await _dataWriter.StoreAsync();
         await _dataWriter.FlushAsync();
+#endif
     }
 
-    async Task<Languages> GetLanguageSupportAsync()
+    public async Task<Languages> GetLanguageSupportAsync()
     {
         Languages ret = null;
         using (var httpClient = new HttpClient())
@@ -115,6 +124,7 @@ public class ApiProxyUWP : IAudioConsumer
         return ret;
     }
 
+#if !UNITY_EDITOR && WINDOWS_UWP
     private async void _ws_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
     {
         if (args.MessageType == SocketMessageType.Utf8)
@@ -165,6 +175,7 @@ public class ApiProxyUWP : IAudioConsumer
             }
         }
     }
+#endif
 
     private async Task<string> GetTokenAsync()
     {
@@ -213,4 +224,3 @@ public class ApiProxyUWP : IAudioConsumer
         return false;
     }
 }
-#endif

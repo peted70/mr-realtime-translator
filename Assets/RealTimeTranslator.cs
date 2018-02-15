@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Security;
 #if UNITY_EDITOR
 using System.Security.Cryptography.X509Certificates;
+using UnityEditor;
 #endif
 using UnityEngine;
 
@@ -15,6 +16,16 @@ public class RealTimeTranslator : MonoBehaviour
     AudioClip _clip;
     string _mic;
     public TextMesh text;
+
+    public SpeechItem FromLanguage;
+    public SpeechItem ToLanguage;
+    public VoiceItem Voice;
+
+    [HideInInspector]
+    public Languages languages;
+
+    [HideInInspector]
+    public ApiProxyUWP apiProxy;
 
     const int SampleRate = 16000;
     const int NumSamplesInChunk = SampleRate / 10;
@@ -61,20 +72,21 @@ public class RealTimeTranslator : MonoBehaviour
         //    var jsonString = await response.Content.ReadAsStringAsync();
         //}
         //    //IAudioConsumer wavFile = new WavFile(SampleRate);
-            //await wavFile.InitialiseAsync();
-            //_consumers.Add(wavFile);
-#if UNTIY_EDITOR
+        //await wavFile.InitialiseAsync();
+        //_consumers.Add(wavFile);
+#if TESTING_AUDIO
         IAudioConsumer apiProxy = new ApiProxy();
         apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
         _consumers.Add(apiProxy);
-#elif WINDOWS_UWP
-            var apiProxy = new ApiProxyUWP();
+#endif
+        apiProxy = new ApiProxyUWP();
+
+        languages = await apiProxy.GetLanguageSupportAsync();
         apiProxy.AudioDataReceived += ApiProxy_AudioDataReceived;
         apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
         _consumers.Add(apiProxy);
-#endif
 
         // From here we can start streaming data from the mic...
         if (Microphone.devices.Length > 0)
@@ -212,3 +224,4 @@ public class RealTimeTranslator : MonoBehaviour
     }
 #endif
 }
+

@@ -303,6 +303,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Editor\SpeechItemCustomEditor.cs" />
     <Compile Include="Assets\MixedRealityToolkit\BuildAndDeploy\Editor\BuildDeployPortal.cs" />
     <Compile Include="Assets\MixedRealityToolkit\BuildAndDeploy\Editor\BuildDeployPrefs.cs" />
     <Compile Include="Assets\MixedRealityToolkit\BuildAndDeploy\Editor\BuildDeployTools.cs" />
