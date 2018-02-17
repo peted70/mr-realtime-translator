@@ -26,6 +26,7 @@ public class SpeechItem
     public string language { get; set; }
 }
 
+[Serializable]
 public class VoiceItem
 {
     public string gender { get; set; }
@@ -40,6 +41,22 @@ public class VoiceItem
 public delegate void ReceiveHandler(string val);
 public delegate void AudioDataReceivedHandler(AudioDataReceivedEventArgs data);
 
+public class ApiProxyParams
+{
+    public string ApiKey;
+    public string FromLanguage;
+    public string ToLanguage;
+    public string Voice;
+
+    // Only need to check the API key - other params will just take default 
+    // values.
+    public void EnsureValid()
+    {
+        if (string.IsNullOrEmpty(ApiKey))
+            throw new ArgumentException("Invalid API Key", "ApiKey");
+    }
+};
+
 public class ApiProxyUWP : IAudioConsumer
 {
     private HttpClient _http;
@@ -52,23 +69,29 @@ public class ApiProxyUWP : IAudioConsumer
     public event ReceiveHandler Received;
     public event AudioDataReceivedHandler AudioDataReceived;
 
-    //const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0";
-    const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=es&features=texttospeech&voice=es-ES-Laura&api-version=1.0";
+    //const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=es&features=texttospeech&voice=es-ES-Laura&api-version=1.0";
+    string _speechurl;
+
+    public ApiProxyUWP(ApiProxyParams parameters)
+    {
+        _speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={parameters.FromLanguage}&to={parameters.ToLanguage}&features=texttospeech&voice={parameters.Voice}&api-version=1.0";
+    }
 
     public async Task InitialiseAsync()
     {
         // Retrieve the Auth token and also retrive the language support
         // data in parallel..
-        var getTokenTask = GetTokenAsync();
-        var getLanguageSupportTask = GetLanguageSupportAsync();
+        //var getTokenTask = GetTokenAsync();
+        //var getLanguageSupportTask = GetLanguageSupportAsync();
+        //await Task.WhenAll(getTokenTask, getLanguageSupportTask);
 
-        await Task.WhenAll(getTokenTask, getLanguageSupportTask);
+        //var token = getTokenTask.Result;
+        //_languages = getLanguageSupportTask.Result;
 
-        var token = getTokenTask.Result;
-        _languages = getLanguageSupportTask.Result;
+        var token = await GetTokenAsync();
 
 #if !UNITY_EDITOR && WINDOWS_UWP
-        await _ws.ConnectAsync(new Uri(speechurl));
+        await _ws.ConnectAsync(new Uri(_speechurl));
         Debug.Log("successfully connected");
 
         // as soon as we are connected send the WAVE header..

@@ -291,11 +291,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ce1c704292350841962602e96d864fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ApiKey: 8336ba69dc244d52bfe17d4257161410
   text: {fileID: 0}
   FromLanguage:
-    name: 
+    name: ar-EG
   ToLanguage:
-    name: 
+    name: ja-JP
   languages:
     languages: []
 --- !u!4 &1826676560

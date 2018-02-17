@@ -15,14 +15,12 @@ public class RealTimeTranslator : MonoBehaviour
 {
     AudioClip _clip;
     string _mic;
+    public string ApiKey = "--- YOUR TRANSLATOR API KEY GOES HERE ---";
     public TextMesh text;
 
     public SpeechItem FromLanguage;
     public SpeechItem ToLanguage;
     public VoiceItem Voice;
-
-    [HideInInspector]
-    public Languages languages;
 
     [HideInInspector]
     public ApiProxyUWP apiProxy;
@@ -74,9 +72,14 @@ public class RealTimeTranslator : MonoBehaviour
         await apiProxy.InitialiseAsync();
         _consumers.Add(apiProxy);
 #endif
-        apiProxy = new ApiProxyUWP();
+        apiProxy = new ApiProxyUWP(new ApiProxyParams
+        {
+            ApiKey = ApiKey,
+            FromLanguage = FromLanguage.name,
+            ToLanguage = ToLanguage.language,
+            Voice = Voice.languageName,
+        });
 
-        languages = await apiProxy.GetLanguageSupportAsync();
         apiProxy.AudioDataReceived += ApiProxy_AudioDataReceived;
         apiProxy.Received += ApiProxy_Received;
         await apiProxy.InitialiseAsync();
