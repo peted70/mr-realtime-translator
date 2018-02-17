@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -51,8 +52,6 @@ public class ApiProxyUWP : IAudioConsumer
     public event ReceiveHandler Received;
     public event AudioDataReceivedHandler AudioDataReceived;
 
-    private AudioDataReceivedEventArgs _args = new AudioDataReceivedEventArgs();
-
     //const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0";
     const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=es&features=texttospeech&voice=es-ES-Laura&api-version=1.0";
 
@@ -89,7 +88,7 @@ public class ApiProxyUWP : IAudioConsumer
     }
 
     public async Task<Languages> GetLanguageSupportAsync()
-    {
+    { 
         Languages ret = null;
         using (var httpClient = new HttpClient())
         {
@@ -125,6 +124,9 @@ public class ApiProxyUWP : IAudioConsumer
     }
 
 #if !UNITY_EDITOR && WINDOWS_UWP
+    
+    private AudioDataReceivedEventArgs _args = new AudioDataReceivedEventArgs();
+
     private async void _ws_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
     {
         if (args.MessageType == SocketMessageType.Utf8)

@@ -35,6 +35,7 @@ public class RealTimeTranslator : MonoBehaviour
     MemoryStream dataStream = new MemoryStream();
 
     private List<IAudioConsumer> _consumers = new List<IAudioConsumer>();
+    ArraySegment<byte> _buffer = new ArraySegment<byte>();
 
     // to get supported languages make a get request to
     // Accept: application/json
@@ -64,14 +65,7 @@ public class RealTimeTranslator : MonoBehaviour
 #if UNITY_EDITOR
         ServicePointManager.ServerCertificateValidationCallback = cb;
 #endif
-        //using (var httpClient = new HttpClient())
-        //{
-        //    var response = await httpClient.GetAsync("https://dev.microsofttranslator.com/languages?api-version=1.0&scope=text,tts,speech");
-        //    // add header
-        //    response.EnsureSuccessStatusCode();
-        //    var jsonString = await response.Content.ReadAsStringAsync();
-        //}
-        //    //IAudioConsumer wavFile = new WavFile(SampleRate);
+        //IAudioConsumer wavFile = new WavFile(SampleRate);
         //await wavFile.InitialiseAsync();
         //_consumers.Add(wavFile);
 #if TESTING_AUDIO
@@ -101,7 +95,7 @@ public class RealTimeTranslator : MonoBehaviour
 
             // if we have a mic start capturing and streaming audio...
             _clip = Microphone.Start(_mic, true, 1, SampleRate);
-            while (Microphone.GetPosition(null) < 0) { } // HACK from Riro
+            while (Microphone.GetPosition(_mic) < 0) { } // HACK from Riro
             Debug.Log("Recording started...");
         }
         else
@@ -137,6 +131,12 @@ public class RealTimeTranslator : MonoBehaviour
         UnityEngine.WSA.Application.InvokeOnAppThread(() => { text.text = val; }, false);
     }
 
+    /// <summary>
+    /// Convert floating point audio data in the range -1.0 to 1.0 to signed 16-bit audio data
+    /// </summary>
+    /// <param name="audioData"></param>
+    /// <param name="stream"></param>
+    /// <returns></returns>
     int BufferConvertedData(float[] audioData, Stream stream)
     {
         // Can't just do a block copy here as we need to convert from float[-1.0f, 1.0f] to 16bit PCM
@@ -174,8 +174,8 @@ public class RealTimeTranslator : MonoBehaviour
         // So copy and convert data here into a MemoryStream and then when  we hit a 
         // chunk boundary we can empty it and either send to the network or copy to 
         // disk..
-        // remove this allocation by pre-allocating a buffer that is always big 
-        // enough..
+        // The sample count is determined by the length of the float array so we can't 
+        // optimise this allocation
         audioData = new float[currentPos - _lastRead];
 
         //Debug.Log("audiodata length = " + audioData.Length + " last read = " + _lastRead);
@@ -190,9 +190,8 @@ public class RealTimeTranslator : MonoBehaviour
         if (dataStream.Position >= ChunkSize)
         {
             dataStream.Flush();
-            ArraySegment<byte> buffer = new ArraySegment<byte>();
 
-            if (!dataStream.TryGetBuffer(out buffer))
+            if (!dataStream.TryGetBuffer(out _buffer))
             {
                 Debug.Log("Couldn't read buffer");
                 return;
@@ -205,15 +204,17 @@ public class RealTimeTranslator : MonoBehaviour
 
                 if (consumer.WriteSynchronous())
                 {
-                    consumer.WriteData(buffer);
+                    consumer.WriteData(_buffer);
                 }
                 else
                 {
-                    consumer.WriteDataAsync(buffer);
+                    consumer.WriteDataAsync(_buffer);
                 }
             }
 
-            dataStream = new MemoryStream();
+            //dataStream = new MemoryStream();
+            dataStream.Seek(0, SeekOrigin.Begin);
+            dataStream.SetLength(0);
         }
     }
 
