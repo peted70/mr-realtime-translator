@@ -64,15 +64,18 @@ public class ApiProxyUWP : IAudioConsumer
     private DataWriter _dataWriter;
 #endif
     public Languages _languages;
-
+    
     public event ReceiveHandler Received;
     public event AudioDataReceivedHandler AudioDataReceived;
+
+    private string _apiKey;
 
     //const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=es&features=texttospeech&voice=es-ES-Laura&api-version=1.0";
     string _speechurl;
 
     public ApiProxyUWP(ApiProxyParams parameters)
     {
+        _apiKey = parameters.ApiKey;
         _speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={parameters.FromLanguage}&to={parameters.ToLanguage}&features=texttospeech&voice={parameters.Voice}&api-version=1.0";
     }
 
@@ -87,7 +90,7 @@ public class ApiProxyUWP : IAudioConsumer
         //var token = getTokenTask.Result;
         //_languages = getLanguageSupportTask.Result;
 
-        var token = await GetTokenAsync();
+        var token = await GetTokenAsync(_apiKey);
 
 #if !UNITY_EDITOR && WINDOWS_UWP
         await _ws.ConnectAsync(new Uri(_speechurl));
@@ -201,12 +204,11 @@ public class ApiProxyUWP : IAudioConsumer
     }
 #endif
 
-    private async Task<string> GetTokenAsync()
+    private async Task<string> GetTokenAsync(string key)
     {
-        string key = "8336ba69dc244d52bfe17d4257161410";// Environment.GetEnvironmentVariable("SKYPE_KEY");
         if (string.IsNullOrEmpty(key))
         {
-            Debug.Log("Please set an environment variable named 'SKYPE_KEY' to your Skype api key");
+            Debug.Log("Please set an Api Key in the Unity Editor or in code");
             return string.Empty;
         }
 
