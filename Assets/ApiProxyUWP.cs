@@ -22,21 +22,20 @@ public class Languages
 public class SpeechItem
 {
     public string name;
-    public string displayname { get; set; }
-    public string language { get; set; }
+    public string displayname;
+    public string language;
 }
 
 [Serializable]
 public class VoiceItem
 {
-    public string gender { get; set; }
-    public string locale { get; set; }
-    public string languageName { get; set; }
-    public string displayName { get; set; }
-    public string regionName { get; set; }
-    public string language { get; set; }
+    public string gender;
+    public string locale;
+    public string languageName;
+    public string displayName;
+    public string regionName;
+    public string language;
 }
-
 
 public delegate void ReceiveHandler(string val);
 public delegate void AudioDataReceivedHandler(AudioDataReceivedEventArgs data);

@@ -292,13 +292,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ApiKey: 8336ba69dc244d52bfe17d4257161410
-  text: {fileID: 0}
+  text: {fileID: 1642400110}
   FromLanguage:
-    name: ar-EG
+    name: ru-RU
+    displayname: Russian
+    language: ru
   ToLanguage:
-    name: ja-JP
-  languages:
-    languages: []
+    name: de-DE
+    displayname: German
+    language: de
+  Voice:
+    gender: male
+    locale: de-DE
+    languageName: German
+    displayName: Stefan
+    regionName: Germany
+    language: de
 --- !u!4 &1826676560
 Transform:
   m_ObjectHideFlags: 0

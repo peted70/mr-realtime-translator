@@ -13,8 +13,7 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class RealTimeTranslator : MonoBehaviour
 {
-    AudioClip _clip;
-    string _mic;
+    // Public fields accessible in the Unity Editor
     public string ApiKey = "--- YOUR TRANSLATOR API KEY GOES HERE ---";
     public TextMesh text;
 
@@ -24,6 +23,9 @@ public class RealTimeTranslator : MonoBehaviour
 
     [HideInInspector]
     public ApiProxyUWP apiProxy;
+
+    AudioClip _clip;
+    string _mic;
 
     const int SampleRate = 16000;
     const int NumSamplesInChunk = SampleRate / 10;
