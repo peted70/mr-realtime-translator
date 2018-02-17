@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class WavFile : IAudioConsumer
+public class WavFile : AudioConsumer
 {
     private MemoryStream _ms;
     private BinaryWriter _bw;
@@ -17,13 +17,13 @@ public class WavFile : IAudioConsumer
         _samplesUntilSave = _sampleRate * 10;
     }
 
-    public void WriteData(ArraySegment<byte> data)
+    public override void WriteData(ArraySegment<byte> data)
     {
         if (_disposed == false)
             WriteData(data.Array);
     }
 
-    public Task WriteDataAsync(ArraySegment<byte> data)
+    public override Task WriteDataAsync(ArraySegment<byte> data)
     {
         if (_disposed == false)
             return Task.Run(() => WriteData(data.Array));
@@ -43,13 +43,13 @@ public class WavFile : IAudioConsumer
         }
     }
 
-    public bool IsValid()
+    public override bool IsValid()
     {
         return !_disposed;
     }
 
     bool _saving = false;
-    public async Task SaveAsync()
+    public override async Task SaveAsync()
     {
         if (_saving == true)
             return;
@@ -74,12 +74,10 @@ public class WavFile : IAudioConsumer
         _disposed = true;
     }
 
-    public Task InitialiseAsync()
+    void Start()
     {
         _ms = new MemoryStream();
         _bw = new BinaryWriter(_ms);
-
-        return Task.FromResult(0);
     }
 
     /// <summary>
@@ -123,7 +121,7 @@ public class WavFile : IAudioConsumer
         }
     }
 
-    public bool WriteSynchronous()
+    public override bool WriteSynchronous()
     {
         return true;
     }

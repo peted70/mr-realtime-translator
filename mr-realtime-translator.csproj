@@ -240,10 +240,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ApiModel.cs" />
     <Compile Include="Assets\ApiProxy.cs" />
-    <Compile Include="Assets\ApiProxyUWP.cs" />
+    <Compile Include="Assets\AudioConsumer.cs" />
     <Compile Include="Assets\AudioDataReceivedEventArgs.cs" />
-    <Compile Include="Assets\IAudioConsumer.cs" />
+    <Compile Include="Assets\MicrophoneAudioGetter.cs" />
     <Compile Include="Assets\MixedRealityToolkit\Boundary\Scripts\BoundaryManager.cs" />
     <Compile Include="Assets\MixedRealityToolkit\Boundary\Scripts\SceneContentAdjuster.cs" />
     <Compile Include="Assets\MixedRealityToolkit\Input\Scripts\Cursor\AnimatedCursor.cs" />
@@ -727,6 +728,7 @@
     <Compile Include="Assets\MixedRealityToolkit\UX\Scripts\UsabilityUtilities.cs" />
     <Compile Include="Assets\RealTimeTranslator.cs" />
     <Compile Include="Assets\Result.cs" />
+    <Compile Include="Assets\TranslatorAPIConsumer.cs" />
     <Compile Include="Assets\WavFile.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -272,6 +272,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1826676560}
   - component: {fileID: 1826676561}
+  - component: {fileID: 1826676562}
+  - component: {fileID: 1826676563}
   - component: {fileID: 1826676559}
   m_Layer: 0
   m_Name: RealTimeTranslator
@@ -291,23 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ce1c704292350841962602e96d864fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ApiKey: 8336ba69dc244d52bfe17d4257161410
-  text: {fileID: 1642400110}
-  FromLanguage:
-    name: ru-RU
-    displayname: Russian
-    language: ru
-  ToLanguage:
-    name: de-DE
-    displayname: German
-    language: de
-  Voice:
-    gender: male
-    locale: de-DE
-    languageName: German
-    displayName: Stefan
-    regionName: Germany
-    language: de
+  apiProxy: {fileID: 0}
 --- !u!4 &1826676560
 Transform:
   m_ObjectHideFlags: 0
@@ -401,6 +387,49 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &1826676562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1826676558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9914dea74a43ec5478cb788c2144ef9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SampleRate: 16000
+  ChunkSize: 1600
+  consumers:
+  - {fileID: 1826676563}
+--- !u!114 &1826676563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1826676558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e02d6c4a4b99eed46a0901f4eb3b730d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ApiKey: TranslatorAPIConsumer
+  text: {fileID: 0}
+  FromLanguage:
+    name: en-US
+    displayname: English
+    language: en
+  ToLanguage:
+    name: ja-JP
+    displayname: Japanese
+    language: ja
+  Voice:
+    gender: female
+    locale: ja-JP
+    languageName: Japanese
+    displayName: Watanabe
+    regionName: Japan
+    language: ja
 --- !u!1 &2028879729
 GameObject:
   m_ObjectHideFlags: 0

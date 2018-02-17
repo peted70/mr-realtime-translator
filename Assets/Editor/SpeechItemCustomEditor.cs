@@ -84,7 +84,7 @@ public class SpeechItemDrawer : PropertyDrawer
         // prefab override logic works on the entire property.
         EditorGUI.BeginProperty(position, label, property);
 
-        var translatorObject = (RealTimeTranslator)property.serializedObject.targetObject;
+        var translatorObject = (TranslatorAPIConsumer)property.serializedObject.targetObject;
         var pi = translatorObject.GetType().GetField(property.name);
 
         var propValue = (SpeechItem)pi.GetValue(translatorObject);
@@ -946,7 +946,7 @@ public class VoiceItemDrawer : PropertyDrawer
         // prefab override logic works on the entire property.
         EditorGUI.BeginProperty(position, label, property);
 
-        var translatorObject = (RealTimeTranslator)property.serializedObject.targetObject;
+        var translatorObject = (TranslatorAPIConsumer)property.serializedObject.targetObject;
         var toLanguage = translatorObject.ToLanguage;
         var voiceOptions = VoiceDict.Where(v => v.Value.locale == toLanguage.name).Select(p => p.Value.displayName).ToArray();
 
@@ -962,7 +962,7 @@ public class VoiceItemDrawer : PropertyDrawer
             // Set the value back into our object - when this happens we also 
             // need to update the voice item..
             var newVoice = VoiceDict.Where(v => v.Value.displayName == voiceOptions[voiceIdx]).Single().Value;
-            Debug.Log("Voice Property Drawer" + newVoice.displayName);
+            //Debug.Log("Voice Property Drawer" + newVoice.displayName);
             translatorObject.Voice = newVoice;
         }
 

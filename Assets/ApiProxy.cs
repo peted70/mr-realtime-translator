@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ApiProxy : IAudioConsumer
+public class ApiProxy : AudioConsumer
 {
     // GET /speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0
     // GET /speech/translate?from=en-US&to=yue&features=texttospeech&voice=zh-HK-Danny&api-version=1.0
@@ -18,7 +18,7 @@ public class ApiProxy : IAudioConsumer
 
     public event ReceiveHandler Received;
 
-    public async Task InitialiseAsync()
+    async void Start()
     {
         string key = Environment.GetEnvironmentVariable("SKYPE_KEY");
         if (string.IsNullOrEmpty(key))
@@ -106,22 +106,22 @@ public class ApiProxy : IAudioConsumer
         Debug.Log("OOPS - connection no longer open");
     }
 
-    public bool IsValid()
+    public override bool IsValid()
     {
         return true;
     }
 
-    public Task SaveAsync()
+    public override Task SaveAsync()
     {
         return Task.FromResult(0);
     }
 
-    public void WriteData(ArraySegment<byte> data)
+    public override void WriteData(ArraySegment<byte> data)
     {
         throw new NotImplementedException();
     }
 
-    public async Task WriteDataAsync(ArraySegment<byte> data)
+    public override async Task WriteDataAsync(ArraySegment<byte> data)
     {
         if (_ws != null)
         {
@@ -130,7 +130,7 @@ public class ApiProxy : IAudioConsumer
         }
     }
 
-    public bool WriteSynchronous()
+    public override bool WriteSynchronous()
     {
         return false;
     }

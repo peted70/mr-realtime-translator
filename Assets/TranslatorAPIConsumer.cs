@@ -11,76 +11,59 @@ using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 #endif
 
-[Serializable]
-public class Languages
-{
-    public List<SpeechItem> languages = new List<SpeechItem>();
-    public Dictionary<string, VoiceItem> Voices { get; set; } = new Dictionary<string, VoiceItem>();
-}
-
-[Serializable]
-public class SpeechItem
-{
-    public string name;
-    public string displayname;
-    public string language;
-}
-
-[Serializable]
-public class VoiceItem
-{
-    public string gender;
-    public string locale;
-    public string languageName;
-    public string displayName;
-    public string regionName;
-    public string language;
-}
-
 public delegate void ReceiveHandler(string val);
 public delegate void AudioDataReceivedHandler(AudioDataReceivedEventArgs data);
 
-public class ApiProxyParams
-{
-    public string ApiKey;
-    public string FromLanguage;
-    public string ToLanguage;
-    public string Voice;
+// to get supported languages make a get request to
+// Accept: application/json
+// https://dev.microsofttranslator.com/languages?api-version=1.0&scope=speech
 
-    // Only need to check the API key - other params will just take default 
-    // values.
-    public void EnsureValid()
-    {
-        if (string.IsNullOrEmpty(ApiKey))
-            throw new ArgumentException("Invalid API Key", "ApiKey");
-    }
-};
+// open a connection to...
+// wss://dev.microsofttranslator.com/speech/translate
 
-public class ApiProxyUWP : IAudioConsumer
+// Example:
+// GET wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=it-IT&features=texttospeech&voice=it-IT-Elsa&api-version=1.0
+// Ocp-Apim-Subscription-Key: {subscription key}
+// X-ClientTraceId: {GUID}
+
+// Once the connection is established, the client begins streaming audio to the service.The client sends audio in chunks.
+// Each chunk is transmitted using a Websocket message of type Binary.
+// Audio input is in the Waveform Audio File Format(WAVE, or more commonly known as WAV due to its filename extension). 
+// The client application should stream single channel, signed 16bit PCM audio sampled at 16 kHz.
+// The first set of bytes streamed by the client will include the WAV header.
+// A 44-byte header for a single channel signed 16 bit PCM stream sampled at 16 kHz is:
+public class TranslatorAPIConsumer : AudioConsumer
 {
+    // Public fields accessible in the Unity Editor
+    public string ApiKey = "--- YOUR TRANSLATOR API KEY GOES HERE ---";
+    public TextMesh text;
+
+    public SpeechItem FromLanguage;
+    public SpeechItem ToLanguage;
+    public VoiceItem Voice;
+
     private HttpClient _http;
 #if !UNITY_EDITOR && WINDOWS_UWP
     private MessageWebSocket _ws;
     private DataWriter _dataWriter;
 #endif
-    public Languages _languages;
+    private Languages _languages;
     
     public event ReceiveHandler Received;
     public event AudioDataReceivedHandler AudioDataReceived;
 
     private string _apiKey;
-
-    //const string speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=es&features=texttospeech&voice=es-ES-Laura&api-version=1.0";
     string _speechurl;
 
-    public ApiProxyUWP(ApiProxyParams parameters)
+    async void Start()
     {
-        _apiKey = parameters.ApiKey;
-        _speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={parameters.FromLanguage}&to={parameters.ToLanguage}&features=texttospeech&voice={parameters.Voice}&api-version=1.0";
-    }
+        string from = FromLanguage.name;
+        string to = ToLanguage.language;
+        string voice = $"{Voice.locale}-{Voice.displayName}";
 
-    public async Task InitialiseAsync()
-    {
+        _apiKey = ApiKey;
+        _speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={from}&to={to}&features=texttospeech&voice={voice}&api-version=1.0";
+
         // Retrieve the Auth token and also retrive the language support
         // data in parallel..
         //var getTokenTask = GetTokenAsync();
@@ -225,27 +208,27 @@ public class ApiProxyUWP : IAudioConsumer
         return token;
     }
 
-    public bool IsValid()
+    public override bool IsValid()
     {
         return true;
     }
 
-    public Task SaveAsync()
+    public override Task SaveAsync()
     {
         return Task.FromResult(0);
     }
 
-    public void WriteData(ArraySegment<byte> data)
+    public override void WriteData(ArraySegment<byte> data)
     {
         throw new NotImplementedException();
     }
 
-    public async Task WriteDataAsync(ArraySegment<byte> data)
+    public override async Task WriteDataAsync(ArraySegment<byte> data)
     {
         await WriteBytes(data.Array);
     }
 
-    public bool WriteSynchronous()
+    public override bool WriteSynchronous()
     {
         return false;
     }
