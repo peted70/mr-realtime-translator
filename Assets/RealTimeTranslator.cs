@@ -79,7 +79,7 @@ public class RealTimeTranslator : MonoBehaviour
             ApiKey = ApiKey,
             FromLanguage = FromLanguage.name,
             ToLanguage = ToLanguage.language,
-            Voice = Voice.languageName,
+            Voice = $"{Voice.locale}-{Voice.displayName}",
         });
 
         apiProxy.AudioDataReceived += ApiProxy_AudioDataReceived;
