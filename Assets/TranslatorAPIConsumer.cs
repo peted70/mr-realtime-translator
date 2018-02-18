@@ -46,7 +46,7 @@ public class TranslatorAPIConsumer : AudioConsumer
 
     private HttpClient _http;
 #if !UNITY_EDITOR && WINDOWS_UWP
-    private MessageWebSocket _ws;
+    private MessageWebSocket _ws = new MessageWebSocket();
     private DataWriter _dataWriter;
 #endif
     private Languages _languages;
@@ -77,6 +77,9 @@ public class TranslatorAPIConsumer : AudioConsumer
         //_languages = getLanguageSupportTask.Result;
 
         var token = await GetTokenAsync(_apiKey);
+        _ws = new MessageWebSocket();
+        _ws.SetRequestHeader("Authorization", "Bearer " + token);
+        _ws.MessageReceived += _ws_MessageReceived;
 
 #if !UNITY_EDITOR && WINDOWS_UWP
         await _ws.ConnectAsync(new Uri(_speechurl));
