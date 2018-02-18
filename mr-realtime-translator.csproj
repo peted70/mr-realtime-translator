@@ -244,6 +244,7 @@
     <Compile Include="Assets\ApiProxy.cs" />
     <Compile Include="Assets\AudioConsumer.cs" />
     <Compile Include="Assets\AudioDataReceivedEventArgs.cs" />
+    <Compile Include="Assets\AudioReceivedHandler.cs" />
     <Compile Include="Assets\MicrophoneAudioGetter.cs" />
     <Compile Include="Assets\MixedRealityToolkit\Boundary\Scripts\BoundaryManager.cs" />
     <Compile Include="Assets\MixedRealityToolkit\Boundary\Scripts\SceneContentAdjuster.cs" />
@@ -728,6 +729,9 @@
     <Compile Include="Assets\MixedRealityToolkit\UX\Scripts\UsabilityUtilities.cs" />
     <Compile Include="Assets\RealTimeTranslator.cs" />
     <Compile Include="Assets\Result.cs" />
+    <Compile Include="Assets\TextReceivedHandler.cs" />
+    <Compile Include="Assets\TranslationAudioReceiver.cs" />
+    <Compile Include="Assets\TranslationTextReceiver.cs" />
     <Compile Include="Assets\TranslatorAPIConsumer.cs" />
     <Compile Include="Assets\WavFile.cs" />
   </ItemGroup>

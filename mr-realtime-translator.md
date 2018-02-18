@@ -100,6 +100,19 @@ Initially I tried to set the WebSocket connection up using the System.Net.WebSoc
 
 #### Retrieving Translated Results 
 
+# Architecture of the Sample Code
+In order to support some reusability of components like the microphone audio data access the code has been factored accordingly. There is a producer/consumer-like model whereby the MicrophoneAudioGetter component is a Monobehaviour into which you can plug consumers. In the sample, there is only one consumer and that is another component which proxies the audio data to the Translator API. Any number of consumers could be plugged in by creating a C# script and implementing the abstract class AudioConsumer and then adding the script component to a GameObject and referencing that in the consumers list of the Microphone Audio Getter.
+
+"C:\Users\Pete D\Pictures\Blog\RealTimeSkype\microphone-audio-getter.PNG"
+
+The Translator API consumer is the one used in the sample and that provides properties via the Editor to configure the API; Api Key, From Language, To Language and Voice:
+
+"C:\Users\Pete D\Pictures\Blog\RealTimeSkype\APIConsumerEditor.PNG"
+
+There are ten languages to choose from and various different male/female voices to choose from depending on the 'to' language selected.
+
+Now, the Translator API sends out a couple of events; one when textual tranlation is received and one for audio. So again we have configured two lists of receivers, one for each event. So in order to receive wither event it is necessary to add a C# script which implements either AudioReceivedHandler or TextReceivedHandler and add a reference to the attached GameObject to the appropriate property in the Translator API behaviour.
+
 <Component and Sample project description>
 <reference to the UWP sample>
 <video of usage>

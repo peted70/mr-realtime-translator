@@ -36,7 +36,9 @@ public class TranslatorAPIConsumer : AudioConsumer
 {
     // Public fields accessible in the Unity Editor
     public string ApiKey = "--- YOUR TRANSLATOR API KEY GOES HERE ---";
-    public TextMesh text;
+
+    public List<TextReceivedHandler> TextReceivers = new List<TextReceivedHandler>();
+    public List<AudioReceivedHandler> AudioReceivers = new List<AudioReceivedHandler>();
 
     public SpeechItem FromLanguage;
     public SpeechItem ToLanguage;
@@ -82,12 +84,16 @@ public class TranslatorAPIConsumer : AudioConsumer
         // as soon as we are connected send the WAVE header..
         _dataWriter = new DataWriter(_ws.OutputStream);
         await WriteBytes(WavFile.GetWaveHeader(0));
+        _headerWritten = true;
         Debug.Log("Sent WAVE header");
 #endif
     }
 
     private async Task WriteBytes(byte[] bytes)
     {
+        if (!_headerWritten)
+            return;
+
 #if !UNITY_EDITOR && WINDOWS_UWP
         _dataWriter.WriteBytes(bytes);
         await _dataWriter.StoreAsync();
@@ -134,6 +140,7 @@ public class TranslatorAPIConsumer : AudioConsumer
 #if !UNITY_EDITOR && WINDOWS_UWP
     
     private AudioDataReceivedEventArgs _args = new AudioDataReceivedEventArgs();
+    private bool _headerWritten;
 
     private async void _ws_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
     {
@@ -147,7 +154,10 @@ public class TranslatorAPIConsumer : AudioConsumer
             }
 
             var result = JsonConvert.DeserializeObject<Result>(jsonOutput);
-            Received?.Invoke(result.translation);
+            foreach (var receiver in TextReceivers)
+            {
+                receiver.OnTextReceived(result);
+            }
         }
         else if (args.MessageType == SocketMessageType.Binary)
         {
@@ -181,7 +191,10 @@ public class TranslatorAPIConsumer : AudioConsumer
                 // Notify observers with this audio data.. (probably should notify the header
                 // to future-proof but skip that for now - API data is signed 16bit PCM mono audio)
                 _args.Data = data;
-                AudioDataReceived?.Invoke(_args);
+                foreach (var receiver in AudioReceivers)
+                {
+                    receiver.OnAudioReceived(_args);
+                }
             }
         }
     }

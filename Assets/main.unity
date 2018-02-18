@@ -275,6 +275,8 @@ GameObject:
   - component: {fileID: 1826676562}
   - component: {fileID: 1826676563}
   - component: {fileID: 1826676559}
+  - component: {fileID: 1826676564}
+  - component: {fileID: 1826676565}
   m_Layer: 0
   m_Name: RealTimeTranslator
   m_TagString: Untagged
@@ -293,7 +295,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ce1c704292350841962602e96d864fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiProxy: {fileID: 0}
 --- !u!4 &1826676560
 Transform:
   m_ObjectHideFlags: 0
@@ -413,23 +414,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02d6c4a4b99eed46a0901f4eb3b730d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ApiKey: TranslatorAPIConsumer
-  text: {fileID: 0}
+  ApiKey: 8336ba69dc244d52bfe17d4257161410
+  TextReceivers:
+  - {fileID: 1826676564}
+  AudioReceivers:
+  - {fileID: 1826676565}
   FromLanguage:
     name: en-US
     displayname: English
     language: en
   ToLanguage:
-    name: ja-JP
-    displayname: Japanese
-    language: ja
+    name: de-DE
+    displayname: German
+    language: de
   Voice:
-    gender: female
-    locale: ja-JP
-    languageName: Japanese
-    displayName: Watanabe
-    regionName: Japan
-    language: ja
+    gender: male
+    locale: de-DE
+    languageName: German
+    displayName: Stefan
+    regionName: Germany
+    language: de
+--- !u!114 &1826676564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1826676558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d17c601bd07bad44c854dce2b5a7cd04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 1642400110}
+--- !u!114 &1826676565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1826676558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a4775321895b8743aed4c4fb90a5bdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 1826676561}
 --- !u!1 &2028879729
 GameObject:
   m_ObjectHideFlags: 0
