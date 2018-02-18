@@ -56,6 +56,7 @@ public class TranslatorAPIConsumer : AudioConsumer
 
     private string _apiKey;
     string _speechurl;
+    private bool _headerWritten;
 
     async void Start()
     {
@@ -140,7 +141,6 @@ public class TranslatorAPIConsumer : AudioConsumer
 #if !UNITY_EDITOR && WINDOWS_UWP
     
     private AudioDataReceivedEventArgs _args = new AudioDataReceivedEventArgs();
-    private bool _headerWritten;
 
     private async void _ws_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
     {
