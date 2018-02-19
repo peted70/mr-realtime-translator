@@ -65,8 +65,8 @@ public class TranslatorAPIConsumer : AudioConsumer
         string voice = $"{Voice.locale}-{Voice.displayName}";
 
         _apiKey = ApiKey;
-        _speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={from}&to={to}&features=texttospeech&voice={voice}&api-version=1.0";
-
+        //_speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={from}&to={to}&features=texttospeech&voice={voice}&api-version=1.0";
+        _speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=es&features=texttospeech&voice=es-ES-Laura&api-version=1.0";
         // Retrieve the Auth token and also retrive the language support
         // data in parallel..
         //var getTokenTask = GetTokenAsync();
@@ -77,16 +77,19 @@ public class TranslatorAPIConsumer : AudioConsumer
         //_languages = getLanguageSupportTask.Result;
 
         var token = await GetTokenAsync(_apiKey);
-        _ws = new MessageWebSocket();
-        _ws.SetRequestHeader("Authorization", "Bearer " + token);
-        _ws.MessageReceived += _ws_MessageReceived;
+        Debug.Log("retrieved token is " + token);
 
 #if !UNITY_EDITOR && WINDOWS_UWP
+        _ws = new MessageWebSocket();
+        _ws.SetRequestHeader("Authorization", "Bearer " + token);
+        _ws.MessageReceived += WebSocketMessageReceived;
+
         await _ws.ConnectAsync(new Uri(_speechurl));
         Debug.Log("successfully connected");
 
         // as soon as we are connected send the WAVE header..
         _dataWriter = new DataWriter(_ws.OutputStream);
+        _dataWriter.ByteOrder = ByteOrder.LittleEndian;
         await WriteBytes(WavFile.GetWaveHeader(0));
         _headerWritten = true;
         Debug.Log("Sent WAVE header");
@@ -95,9 +98,6 @@ public class TranslatorAPIConsumer : AudioConsumer
 
     private async Task WriteBytes(byte[] bytes)
     {
-        if (!_headerWritten)
-            return;
-
 #if !UNITY_EDITOR && WINDOWS_UWP
         _dataWriter.WriteBytes(bytes);
         await _dataWriter.StoreAsync();
@@ -145,7 +145,7 @@ public class TranslatorAPIConsumer : AudioConsumer
     
     private AudioDataReceivedEventArgs _args = new AudioDataReceivedEventArgs();
 
-    private async void _ws_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
+    private void WebSocketMessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
     {
         if (args.MessageType == SocketMessageType.Utf8)
         {
@@ -241,6 +241,8 @@ public class TranslatorAPIConsumer : AudioConsumer
 
     public override async Task WriteDataAsync(ArraySegment<byte> data)
     {
+        if (!_headerWritten)
+            return;
         await WriteBytes(data.Array);
     }
 

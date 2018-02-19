@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -42,8 +43,7 @@ public class MicrophoneAudioGetter : MonoBehaviour
         return audioData.Length;
     }
 
-    // Use this for initialization
-    void Start()
+    public void StartRecording()
     {
         // From here we can start streaming data from the mic...
         if (Microphone.devices.Length > 0)
@@ -56,8 +56,15 @@ public class MicrophoneAudioGetter : MonoBehaviour
                 Debug.Log(mic);
             }
 
+            int minFreq = 0;
+            int maxFreq = 0;
+
+            Microphone.GetDeviceCaps(_mic, out minFreq, out maxFreq);
+            Debug.Log("Microphone min freq = " + minFreq + " max freq = " + maxFreq);
+
             // if we have a mic start capturing and streaming audio...
             _clip = Microphone.Start(_mic, true, 1, SampleRate);
+            int numChannels = _clip.channels;
             while (Microphone.GetPosition(_mic) < 0) { } // HACK from Riro
             Debug.Log("Recording started...");
         }
@@ -65,6 +72,19 @@ public class MicrophoneAudioGetter : MonoBehaviour
         {
             Debug.Log("No Microphone detected");
         }
+    }
+
+    IEnumerator AutoStart()
+    {
+        yield return new WaitForSeconds(5);
+        Debug.Log("Recording started");
+        StartRecording();
+    }
+
+    // Use this for initialization
+    void Start()
+    {
+        StartCoroutine(AutoStart());
     }
 
     // Update is called once per frame
@@ -124,8 +144,9 @@ public class MicrophoneAudioGetter : MonoBehaviour
                 }
             }
 
-            dataStream.Seek(0, SeekOrigin.Begin);
-            dataStream.SetLength(0);
+            dataStream = new MemoryStream();
+            //dataStream.Seek(0, SeekOrigin.Begin);
+            //dataStream.SetLength(0);
         }
     }
 }

@@ -11,10 +11,15 @@ public class WavFile : AudioConsumer
     private bool _disposed;
     private int _samplesUntilSave;
 
-    public WavFile(int sampleRate)
+    public int CaptureLength = 10;
+    public int SampleRate = 16000;
+
+    void Start()
     {
-        _sampleRate = sampleRate;
-        _samplesUntilSave = _sampleRate * 10;
+        _samplesUntilSave = CaptureLength * SampleRate;
+
+        _ms = new MemoryStream();
+        _bw = new BinaryWriter(_ms); 
     }
 
     public override void WriteData(ArraySegment<byte> data)
@@ -37,6 +42,7 @@ public class WavFile : AudioConsumer
     {
         _bw.Write(data);
         _totalWritten += data.Length;
+        Debug.Log("total written = " + _bw.BaseStream.Position);
         if (_totalWritten > _samplesUntilSave)
         {
             SaveAsync();
@@ -56,28 +62,35 @@ public class WavFile : AudioConsumer
 
         _saving = true;
         Debug.Log("Closing file");
-        using (var debugFs = new FileStream("out.wav", FileMode.OpenOrCreate))
+        try
         {
-            uint headerSize = 44;
-            uint dataSize = (uint)_ms.Length;
+            string file = Application.persistentDataPath + Path.DirectorySeparatorChar + "out.wav";
 
-            var headerBytes = GetWaveHeader(dataSize, headerSize + dataSize);
-            await debugFs.WriteAsync(headerBytes, 0, headerBytes.Length);
-
-            _ms.Position = 0;
-            using (var br = new BinaryReader(_ms))
+            using (var debugFs = new FileStream(file, FileMode.OpenOrCreate))
             {
-                await debugFs.WriteAsync(br.ReadBytes((int)_ms.Length), 0, (int)_ms.Length);
+                uint headerSize = 44;
+                uint dataSize = (uint)_ms.Length;
+
+                var headerBytes = GetWaveHeader(dataSize, headerSize + dataSize);
+                await debugFs.WriteAsync(headerBytes, 0, headerBytes.Length);
+
+                _ms.Position = 0;
+                using (var br = new BinaryReader(_ms))
+                {
+                    await debugFs.WriteAsync(br.ReadBytes((int)_ms.Length), 0, (int)_ms.Length);
+                }
             }
         }
-        _bw.Dispose();
-        _disposed = true;
-    }
-
-    void Start()
-    {
-        _ms = new MemoryStream();
-        _bw = new BinaryWriter(_ms);
+        catch (Exception ex)
+        {
+            Debug.Log(ex.Message);
+            return;
+        }
+        finally
+        {
+            _bw.Dispose();
+            _disposed = true;
+        }
     }
 
     /// <summary>

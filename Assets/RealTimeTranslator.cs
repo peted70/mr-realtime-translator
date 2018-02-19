@@ -12,7 +12,7 @@ public class RealTimeTranslator : MonoBehaviour
     void Start()
     {
         var cfg = AudioSettings.GetConfiguration();
-        cfg.dspBufferSize = 0;
+        //cfg.dspBufferSize = 0;
 
 #if UNITY_EDITOR
         ServicePointManager.ServerCertificateValidationCallback = cb;
