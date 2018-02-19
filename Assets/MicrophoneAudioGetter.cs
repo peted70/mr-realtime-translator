@@ -153,9 +153,8 @@ public class MicrophoneAudioGetter : MonoBehaviour
                 }
             }
 
-            dataStream = new MemoryStream();
-            //dataStream.Seek(0, SeekOrigin.Begin);
-            //dataStream.SetLength(0);
+            dataStream.Seek(0, SeekOrigin.Begin);
+            dataStream.SetLength(0);
         }
     }
 }

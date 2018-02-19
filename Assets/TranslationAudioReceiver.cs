@@ -14,12 +14,8 @@ public class TranslationAudioReceiver : AudioReceivedHandler
             audioSource.clip = clip;
             audioSource.volume = 1;
             audioSource.enabled = true;
-            audioSource.minDistance = 0;
-            audioSource.maxDistance = 1000;
-
-            audioSource.rolloffMode = AudioRolloffMode.Linear;
             audioSource.Stop();
-            audioSource.PlayOneShot(clip, 100.0f);
+            audioSource.PlayOneShot(clip);
             Debug.Log("Playing audio");
         },
         false);

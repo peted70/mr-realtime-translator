@@ -245,6 +245,7 @@
     <Compile Include="Assets\AudioConsumer.cs" />
     <Compile Include="Assets\AudioDataReceivedEventArgs.cs" />
     <Compile Include="Assets\AudioReceivedHandler.cs" />
+    <Compile Include="Assets\BlinkSCript.cs" />
     <Compile Include="Assets\ButtonScript.cs" />
     <Compile Include="Assets\MicrophoneAudioGetter.cs" />
     <Compile Include="Assets\MixedRealityToolkit\Boundary\Scripts\BoundaryManager.cs" />
