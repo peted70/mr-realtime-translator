@@ -202,90 +202,34 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3eddd1c29199313478dd3f912bfab2ab, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &209340448
+--- !u!1 &298535763
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 209340451}
-  - component: {fileID: 209340450}
-  - component: {fileID: 209340449}
+  - component: {fileID: 298535764}
   m_Layer: 0
-  m_Name: New Text
+  m_Name: HologramCollection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!102 &209340449
-TextMesh:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 209340448}
-  m_Text: Hello World
-  m_OffsetZ: 0
-  m_CharacterSize: 0.05
-  m_LineSpacing: 1
-  m_Anchor: 0
-  m_Alignment: 0
-  m_TabSize: 4
-  m_FontSize: 40
-  m_FontStyle: 0
-  m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 98d9db324dda3a44e93fbf3b7ce9eca9, type: 3}
-  m_Color:
-    serializedVersion: 2
-    rgba: 4294967295
---- !u!23 &209340450
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 209340448}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_Materials:
-  - {fileID: 2100000, guid: 98d9db324dda3a44e93fbf3b7ce9eca9, type: 3}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!4 &209340451
+--- !u!4 &298535764
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 209340448}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 298535763}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.15, y: 0.95, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1826676560}
-  m_RootOrder: 0
+  m_Children:
+  - {fileID: 873236950}
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &608944358
 GameObject:
@@ -329,6 +273,77 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!102 &794963606 stripped
+TextMesh:
+  m_PrefabParentObject: {fileID: 102388627371495780, guid: 1a0759e55db1a9849924d2a66f70b5a0,
+    type: 2}
+  m_PrefabInternal: {fileID: 873236949}
+--- !u!1001 &873236949
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 298535764}
+    m_Modifications:
+    - target: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114391541441867808, guid: 1a0759e55db1a9849924d2a66f70b5a0,
+        type: 2}
+      propertyPath: MicrophoneData
+      value: 
+      objectReference: {fileID: 1826676562}
+    - target: {fileID: 1050545287129284, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+      propertyPath: m_Name
+      value: OutputText
+      objectReference: {fileID: 0}
+    - target: {fileID: 114382056367907670, guid: 1a0759e55db1a9849924d2a66f70b5a0,
+        type: 2}
+      propertyPath: Renderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114380225661533310, guid: 1a0759e55db1a9849924d2a66f70b5a0,
+        type: 2}
+      propertyPath: ButtonState
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 1a0759e55db1a9849924d2a66f70b5a0, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &873236950 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4752657107388816, guid: 1a0759e55db1a9849924d2a66f70b5a0,
+    type: 2}
+  m_PrefabInternal: {fileID: 873236949}
 --- !u!1 &1012261063
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,8 +450,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 209340451}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -556,16 +570,16 @@ MonoBehaviour:
     displayname: English
     language: en
   ToLanguage:
-    name: de-DE
-    displayname: German
-    language: de
+    name: ja-JP
+    displayname: Japanese
+    language: ja
   Voice:
-    gender: male
-    locale: de-DE
-    languageName: German
-    displayName: Stefan
-    regionName: Germany
-    language: de
+    gender: female
+    locale: ja-JP
+    languageName: Japanese
+    displayName: Ayumi
+    regionName: Japan
+    language: ja
 --- !u!114 &1826676564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -577,7 +591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d17c601bd07bad44c854dce2b5a7cd04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 209340449}
+  text: {fileID: 794963606}
 --- !u!114 &1826676565
 MonoBehaviour:
   m_ObjectHideFlags: 0

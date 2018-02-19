@@ -43,6 +43,11 @@ public class MicrophoneAudioGetter : MonoBehaviour
         return audioData.Length;
     }
 
+    public bool IsRecording()
+    {
+        return _clip != null;
+    }
+
     public void StartRecording()
     {
         // From here we can start streaming data from the mic...
@@ -74,6 +79,11 @@ public class MicrophoneAudioGetter : MonoBehaviour
         }
     }
 
+    public void StopRecording()
+    {
+        _clip = null;
+    }
+
     IEnumerator AutoStart()
     {
         yield return new WaitForSeconds(5);
@@ -84,7 +94,6 @@ public class MicrophoneAudioGetter : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        StartCoroutine(AutoStart());
     }
 
     // Update is called once per frame
