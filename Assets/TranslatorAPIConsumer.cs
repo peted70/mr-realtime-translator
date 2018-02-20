@@ -67,7 +67,7 @@ public class TranslatorAPIConsumer : AudioConsumer
         string voice = $"{Voice.locale}-{Voice.displayName}";
 
         _apiKey = ApiKey;
-        _speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={from}&to={to}&features=texttospeech&voice={voice}&api-version=1.0";
+        _speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={from}&to={to}&features=partial,texttospeech&voice={voice}&api-version=1.0";
 
         // Retrieve the Auth token and also retrive the language support
         // data in parallel..
