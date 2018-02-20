@@ -97,7 +97,7 @@ public class MicrophoneAudioGetter : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (_clip == null)
             return;

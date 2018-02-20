@@ -72,9 +72,7 @@ You can get an overview of the Translator APIs here https://docs.microsofttransl
 
 "C:\Users\Pete D\Pictures\Blog\RealTimeSkype\unitymic.PNG"
 
-We are going to focus on the speech part of things the details are here https://docs.microsofttranslator.com/speech-translate.html in the official documentation.
-
-I'm just going to pick out the significant parts based on building the sample that goes with this post for more details and setting up the Azure backend to be able to use the service please refer to the documentation referenced above.
+We are going to focus on the speech part of things the details are here https://docs.microsofttranslator.com/speech-translate.html in the official documentation. I'm just going to pick out the significant parts based on building the sample that goes with this post for more details and setting up the Azure backend to be able to use the service please refer to the documentation referenced above.
 
 1) Azure Subscription
 2) Activate a Translator Speech API on the Azure portal
@@ -112,6 +110,12 @@ The Translator API consumer is the one used in the sample and that provides prop
 There are ten languages to choose from and various different male/female voices to choose from depending on the 'to' language selected.
 
 Now, the Translator API sends out a couple of events; one when textual tranlation is received and one for audio. So again we have configured two lists of receivers, one for each event. So in order to receive wither event it is necessary to add a C# script which implements either AudioReceivedHandler or TextReceivedHandler and add a reference to the attached GameObject to the appropriate property in the Translator API behaviour.
+
+I've added two simple handlers to the sample.
+
+"C:\Users\Pete D\Pictures\Blog\RealTimeSkype\TextAUdioReceivers.PNG"
+
+The text one updates a TextMesh and the Audio handler writes the data to an AudioSource.
 
 <Component and Sample project description>
 <reference to the UWP sample>

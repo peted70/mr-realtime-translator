@@ -66,7 +66,7 @@ public class TranslatorAPIConsumer : AudioConsumer
 
         _apiKey = ApiKey;
         _speechurl = $"wss://dev.microsofttranslator.com/speech/translate?from={from}&to={to}&features=texttospeech&voice={voice}&api-version=1.0";
-        //_speechurl = "wss://dev.microsofttranslator.com/speech/translate?from=en-US&to=es&features=texttospeech&voice=es-ES-Laura&api-version=1.0";
+
         // Retrieve the Auth token and also retrive the language support
         // data in parallel..
         //var getTokenTask = GetTokenAsync();
