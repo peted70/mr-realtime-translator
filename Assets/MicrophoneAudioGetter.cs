@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DONT_DOWNSAMPLE
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -32,6 +34,7 @@ public class MicrophoneAudioGetter : MonoBehaviour
     /// <returns></returns>
     int BufferConvertedData(float[] audioData, Stream stream)
     {
+#if DONT_DOWNSAMPLE
         // Can't just do a block copy here as we need to convert from float[-1.0f, 1.0f] to 16bit PCM
         int i = 0;
         while (i < audioData.Length)
@@ -39,6 +42,14 @@ public class MicrophoneAudioGetter : MonoBehaviour
             stream.Write(BitConverter.GetBytes(Convert.ToInt16(audioData[i] * Int16.MaxValue)), 0, sizeof(Int16));
             ++i;
         }
+#else
+        // Downsample from 48Khz tp 16kHz
+        for (int i=0;i<audioData.Length/3;i+=3)
+        {
+            float avg = (audioData[i] + audioData[i + 1] + audioData[i + 2]) / 3.0f;
+            stream.Write(BitConverter.GetBytes(Convert.ToInt16(avg * Int16.MaxValue)), 0, sizeof(Int16));
+        }
+#endif
 
         return audioData.Length;
     }
@@ -67,9 +78,12 @@ public class MicrophoneAudioGetter : MonoBehaviour
             Microphone.GetDeviceCaps(_mic, out minFreq, out maxFreq);
             Debug.Log("Microphone min freq = " + minFreq + " max freq = " + maxFreq);
 
+            //AudioSettings.outputSampleRate = 16000;
+
             // if we have a mic start capturing and streaming audio...
             _clip = Microphone.Start(_mic, true, 1, SampleRate);
             int numChannels = _clip.channels;
+            Debug.Log("Microphone clip num channels = " + numChannels);
             while (Microphone.GetPosition(_mic) < 0) { } // HACK from Riro
             Debug.Log("Recording started...");
         }
@@ -103,6 +117,8 @@ public class MicrophoneAudioGetter : MonoBehaviour
             return;
 
         int currentPos = Microphone.GetPosition(_mic);
+
+        // float loop = _clip.length * SampleRate;
         if (currentPos < _lastRead)
         {
             _lastRead = 0;
@@ -131,7 +147,6 @@ public class MicrophoneAudioGetter : MonoBehaviour
         if (dataStream.Position >= ChunkSize)
         {
             dataStream.Flush();
-
             if (!dataStream.TryGetBuffer(out _buffer))
             {
                 Debug.Log("Couldn't read buffer");
@@ -145,11 +160,11 @@ public class MicrophoneAudioGetter : MonoBehaviour
 
                 if (consumer.WriteSynchronous())
                 {
-                    consumer.WriteData(_buffer);
+                    consumer.WriteData(dataStream, (int)dataStream.Position);
                 }
                 else
                 {
-                    consumer.WriteDataAsync(_buffer);
+                    consumer.WriteDataAsync(dataStream, (int)dataStream.Position);
                 }
             }
 

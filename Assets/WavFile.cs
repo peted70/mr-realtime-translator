@@ -22,25 +22,48 @@ public class WavFile : AudioConsumer
         _bw = new BinaryWriter(_ms); 
     }
 
-    public override void WriteData(ArraySegment<byte> data)
+    public async override Task WriteDataAsync(MemoryStream stream, int count)
     {
-        if (_disposed == false)
-            WriteData(data.Array);
+        await WriteDataAsync(stream.ToArray(), count);
     }
 
-    public override Task WriteDataAsync(ArraySegment<byte> data)
+    public override void WriteData(MemoryStream stream, int count)
+    {
+        WriteData(stream.ToArray(), count);
+    }
+
+    public override void WriteData(byte[] data, int count)
     {
         if (_disposed == false)
-            return Task.Run(() => WriteData(data.Array));
+            WriteDataInternal(data, count);
+    }
+
+    public override void WriteData(ArraySegment<byte> data, int count)
+    {
+        if (_disposed == false)
+            WriteDataInternal(data.Array, count);
+    }
+
+    public override Task WriteDataAsync(byte[] data, int count)
+    {
+        if (_disposed == false)
+            return Task.Run(() => WriteDataInternal(data, count));
+        return null;
+    }
+
+    public override Task WriteDataAsync(ArraySegment<byte> data, int count)
+    {
+        if (_disposed == false)
+            return Task.Run(() => WriteDataInternal(data.Array, count));
         return null;
     }
 
     int _totalWritten = 0;
     private readonly int _sampleRate;
 
-    private void WriteData(byte[] data)
+    private void WriteDataInternal(byte[] data, int count)
     {
-        _bw.Write(data);
+        _bw.Write(data, 0, count);
         _totalWritten += data.Length;
         Debug.Log("total written = " + _bw.BaseStream.Position);
         if (_totalWritten > _samplesUntilSave)

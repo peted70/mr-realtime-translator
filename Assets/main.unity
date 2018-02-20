@@ -347,7 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec6c868c75952b7459fd601085c2ee6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CaptureLength: 10
+  CaptureLength: 20
   SampleRate: 16000
 --- !u!4 &608944360
 Transform:
@@ -875,16 +875,16 @@ MonoBehaviour:
     displayname: English
     language: en
   ToLanguage:
-    name: ja-JP
-    displayname: Japanese
-    language: ja
+    name: de-DE
+    displayname: German
+    language: de
   Voice:
-    gender: female
-    locale: ja-JP
-    languageName: Japanese
-    displayName: Ayumi
-    regionName: Japan
-    language: ja
+    gender: male
+    locale: de-DE
+    languageName: German
+    displayName: Stefan
+    regionName: Germany
+    language: de
 --- !u!114 &1826676564
 MonoBehaviour:
   m_ObjectHideFlags: 0

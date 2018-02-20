@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -104,6 +106,15 @@ public class TranslatorAPIConsumer : AudioConsumer
         await _dataWriter.FlushAsync();
 #endif
     }
+
+#if !UNITY_EDITOR && WINDOWS_UWP
+    private async Task WriteBuffer(IBuffer buffer, int count)
+    {
+        _dataWriter.WriteBuffer(buffer, 0, (uint)count);
+        await _dataWriter.StoreAsync();
+        await _dataWriter.FlushAsync();
+}
+#endif
 
     public async Task<Languages> GetLanguageSupportAsync()
     { 
@@ -234,16 +245,41 @@ public class TranslatorAPIConsumer : AudioConsumer
         return Task.FromResult(0);
     }
 
-    public override void WriteData(ArraySegment<byte> data)
+    public override void WriteData(ArraySegment<byte> data, int count)
     {
         throw new NotImplementedException();
     }
 
-    public override async Task WriteDataAsync(ArraySegment<byte> data)
+    public override async Task WriteDataAsync(ArraySegment<byte> data, int count)
     {
         if (!_headerWritten)
             return;
         await WriteBytes(data.Array);
+    }
+
+    public async override Task WriteDataAsync(MemoryStream stream, int count)
+    {
+#if !UNITY_EDITOR && WINDOWS_UWP
+        var buffer = stream.GetWindowsRuntimeBuffer();
+        await WriteBuffer(buffer, count);
+#endif
+    }
+
+    public override void WriteData(MemoryStream stream, int count)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void WriteData(byte[] data, int count)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async override Task WriteDataAsync(byte[] data, int count)
+    {
+        if (!_headerWritten)
+            return;
+        await WriteBytes(data);
     }
 
     public override bool WriteSynchronous()
