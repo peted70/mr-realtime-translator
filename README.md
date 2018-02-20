@@ -1,7 +1,9 @@
 # Mixed Reality Real-time Translator
+Note that this repository includes the Mixed Reality Toolkit for Unity as a submodule. See instructions here https://github.com/mtirion/MRTKAsSubModule if you are not familiar with submodules or their use in a Unity project.
+
 ![alt tag](https://raw.github.com/peted70/mr-realtime-translator/master/img/headline.PNG)
 
-A quick guide of the different Unity components and how they can be used together and reused. For a detailed description see 
+A quick guide of the different Unity components and how they can be used together and reused. For a detailed description see http://peted.azurewebsites.net/mixed-reality-real-time-translator/  
 
 ## Unity Components
 ### Microphone Audio Getter
@@ -16,8 +18,9 @@ This component handles all communication with the Translator API including the A
 
 ![alt tag](https://raw.github.com/peted70/mr-realtime-translator/master/img/translatorAPI.PNG)
 
-Again, components can be plugged in to respond to the responses from the Translator API. These are plugged in with the AudioReceivedHandler and TextReceivedHandler abstract classes. There are implementations fo those in the sample and they look like this:
+Again, components can be plugged in to respond to the responses from the Translator API. These are plugged in with the AudioReceivedHandler and TextReceivedHandler abstract classes. There are implementations for those in the sample and they look like this:
 
 ![alt tag](https://raw.github.com/peted70/mr-realtime-translator/master/img/unityreceivers.PNG)
 
-For further details see 
+For further details see http://peted.azurewebsites.net/mixed-reality-real-time-translator/
+
